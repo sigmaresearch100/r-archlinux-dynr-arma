@@ -2,6 +2,19 @@
 
 set -e
 
+# Solution to hard-coded Makevars in the arma branch
+Rscript -e "                 \
+    install.packages(       \
+        c(                  \
+          'Rcpp',           \
+          'RcppArmadillo',  \
+          'RcppGSL'         \
+        ),                  \
+        repos = c(REPO_NAME = 'https://packagemanager.rstudio.com/all/latest/'), \
+        lib = file.path(Sys.getenv('R_HOME'), 'library')                         \
+    )                                                                            \
+"
+
 # roxygen2
 Rscript -e "                                              \
     remotes::install_version(                             \
@@ -19,7 +32,7 @@ Rscript -e "          \
           'igraph',   \
           'fclust'    \
         ),            \
-        repos = 'https://packagemanager.rstudio.com/all/__linux__/jammy/latest', \
+        repos = c(REPO_NAME = 'https://packagemanager.rstudio.com/all/latest/')  \
     )                                                                            \
 "
 
@@ -28,7 +41,7 @@ Rscript -e "                                              \
     try(tinytex::install_tinytex())                       \
 "
 
-git clone https://github.com/mhunter1/dynr.git
+git clone -b arma https://github.com/mhunter1/dynr.git
 cd dynr
 ./configure
 make clean install

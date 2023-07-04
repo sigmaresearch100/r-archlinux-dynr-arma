@@ -1,0 +1,33 @@
+name: Build in Arch Linux (Docker)
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux
+
+    steps:
+      -
+        name: Check out repository
+        uses: actions/checkout@v3
+      -
+        name: Install system dependencies
+        run: bash ${PWD}/tools/dep.sh
+      -
+        name: Install remotes and rprojroot
+        run: Rscript ${PWD}/tools/000.R
+      -
+        name: Install R dependencies
+        run: Rscript ${PWD}/tools/dep.R
+      -
+        name: Build package
+        run: bash ${PWD}/tools/build.sh
